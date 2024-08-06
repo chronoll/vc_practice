@@ -1,4 +1,5 @@
 #include "mpi.h"
+#include "httpcomm.h"
 
 #define BUF_SIZE 2
 #define LOOP 2
@@ -17,5 +18,12 @@ int main(int argc, char *argv[]){
     for (int l = 1; l <= LOOP; l++) {
         for (int i = 0; i < BUF_SIZE; i++) send_buf[i] = l;
         for (int i = 0; i < BUF_SIZE; i++) recv_buf[i] = 0;
+
+        if (id < proc / 2) HTTP_Send(id, id + (proc / 2), l, send_buf, BUF_SIZE, "MPI_DOUBLE");
+        else HTTP_Recv(id, id - (proc / 2), l, recv_buf, BUF_SIZE, "MPI_DOUBLE");
     }
+
+    MPI_Finalize();
+
+    return 0;
 }
