@@ -3,6 +3,7 @@
 
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -47,6 +48,11 @@ void HTTP_Send(int YOUR_ID, int SEND_TO_ID, int TAG, void *p, int LEN, const cha
     if (dstSocket_ID < 0) printf("ID:ソケット生成エラー\n");
 
     struct sockaddr_in dstAddr_ID;
+
+    memset(&dstAddr_ID, 0, sizeof(dstAddr_ID));
+	dstAddr_ID.sin_port = htons(port);
+	dstAddr_ID.sin_family = AF_INET;
+	dstAddr_ID.sin_addr.s_addr = inet_addr(httphost);
 
     /* 接続 */
     int result_ID = connect(dstSocket_ID, (struct sockaddr *)&(dstAddr_ID), sizeof(dstAddr_ID));
@@ -93,6 +99,11 @@ void HTTP_Send(int YOUR_ID, int SEND_TO_ID, int TAG, void *p, int LEN, const cha
     if (dstSocket_DATA < 0) printf("DATA:ソケット生成エラー\n");
 
     struct sockaddr_in dstAddr_DATA;
+
+    memset(&dstAddr_DATA, 0, sizeof(dstAddr_DATA));
+	dstAddr_DATA.sin_port = htons(port);
+	dstAddr_DATA.sin_family = AF_INET;
+	dstAddr_DATA.sin_addr.s_addr = inet_addr(httphost);
 
     /* 接続 */
     int result_DATA = connect(dstSocket_DATA, (struct sockaddr *)&(dstAddr_DATA), sizeof(dstAddr_DATA));
@@ -178,7 +189,7 @@ void HTTP_Send(int YOUR_ID, int SEND_TO_ID, int TAG, void *p, int LEN, const cha
     sprintf(text_end, "\r\n");
     send(dstSocket_DATA, text_end, strlen(text_end), 0);
 
-    sprintf("text", "--xYzZY--\r\n");
+    sprintf(text_end, "--xYzZY--\r\n");
     send(dstSocket_DATA, text_end, strlen(text_end), 0);
 
     sprintf(text_end, "\r\n");
@@ -198,6 +209,11 @@ void HTTP_Send(int YOUR_ID, int SEND_TO_ID, int TAG, void *p, int LEN, const cha
         if (dstSocket_FLAG < 0) printf("FLAG:ソケット生成エラー\n");
 
         struct sockaddr_in dstAddr_FLAG;
+
+        memset(&dstAddr_FLAG, 0, sizeof(dstAddr_FLAG));
+        dstAddr_FLAG.sin_port = htons(port);
+	    dstAddr_FLAG.sin_family = AF_INET;
+	    dstAddr_FLAG.sin_addr.s_addr = inet_addr(httphost);
 
         /* 接続 */
         int result_FLAG = connect(dstSocket_FLAG, (struct sockaddr *)&(dstAddr_FLAG), sizeof(dstAddr_FLAG));

@@ -3,6 +3,7 @@
 
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -39,6 +40,11 @@ void HTTP_Recv(int YOUR_ID, int RECEIVE_FROM_ID, int TAG, void *p, int LEN, cons
         if (dstSocket < 0) printf("ソケット生成エラー\n");
 
         struct sockaddr_in dstAddr;
+
+        memset(&dstAddr, 0, sizeof(dstAddr));
+        dstAddr.sin_port = htons(port);
+	    dstAddr.sin_family = AF_INET;
+	    dstAddr.sin_addr.s_addr = inet_addr(httphost);
 
         /* 接続 */
         int result = connect(dstSocket, (struct sockaddr *)&(dstAddr), sizeof(dstAddr));
