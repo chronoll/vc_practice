@@ -43,59 +43,61 @@ void HTTP_Send(int YOUR_ID, int SEND_TO_ID, int TAG, void *p, int LEN, const cha
     /*************************************************************************/
     
     /* ソケット生成 */
-    int dstSocket = socket(AF_INET, SOCK_STREAM, 0);
-    if (dstSocket < 0) printf("ソケット生成エラー\n");
+    int dstSocket_ID = socket(AF_INET, SOCK_STREAM, 0);
+    if (dstSocket_ID < 0) printf("ID:ソケット生成エラー\n");
 
-    struct sockaddr_in dstAddr;
+    struct sockaddr_in dstAddr_ID;
 
     /* 接続 */
-    int result = connect(dstSocket, (struct sockaddr *)&(dstAddr), sizeof(dstAddr));
-    if (result < 0) {
-        printf("バインドエラー\n");
+    int result_ID = connect(dstSocket_ID, (struct sockaddr *)&(dstAddr_ID), sizeof(dstAddr_ID));
+    if (result_ID < 0) {
+        printf("ID:バインドエラー\n");
         exit(1);
     }
 
     /* headerの送信 (normal_header) */
-    char *text = (char *)malloc(sizeof(char)*512);
+    char *text_ID = (char *)malloc(sizeof(char)*512);
 
     // http header
-    sprintf(text, "POST %s?ID_%d HTTP/1.1\r\n", httppath[ID], YOUR_ID);
-    send(dstSocket, text, strlen(text), 0);
+    sprintf(text_ID, "POST %s?ID_%d HTTP/1.1\r\n", httppath[ID], YOUR_ID);
+    send(dstSocket_ID, text_ID, strlen(text_ID), 0);
 
     // set host
-    sprintf(text, "Host: %s:%d\r\n", httphost, port);
-    send(dstSocket, text, strlen(text), 0);
+    sprintf(text_ID, "Host: %s:%d\r\n", httphost, port);
+    send(dstSocket_ID, text_ID, strlen(text_ID), 0);
 
     // コンテンツタイプの指定
-    sprintf(text, "Content-Type: application/x-www-form-urlencoded\r\n");
-    send(dstSocket, text, strlen(text), 0);
+    sprintf(text_ID, "Content-Type: application/x-www-form-urlencoded\r\n");
+    send(dstSocket_ID, text_ID, strlen(text_ID), 0);
 
     // コンテンツの長さ(バイト)を指定する
-    sprintf(text, "Content-Length: %d\r\n", (int)body.length());
-    send(dstSocket, text, strlen(text), 0);
+    sprintf(text_ID, "Content-Length: %d\r\n", (int)body.length());
+    send(dstSocket_ID, text_ID, strlen(text_ID), 0);
 
-    sprintf(text, "Connection: Close\r\n");
-    send(dstSocket, text, strlen(text), 0);
+    sprintf(text_ID, "Connection: Close\r\n");
+    send(dstSocket_ID, text_ID, strlen(text_ID), 0);
 
-    sprintf(text, "\r\n");
-    send(dstSocket, text, strlen(text), 0);
+    sprintf(text_ID, "\r\n");
+    send(dstSocket_ID, text_ID, strlen(text_ID), 0);
 
     /* bodyの送信 (sock.mysend) */
-    send(dstSocket, body.c_str(), (int)body.length(), 0);
+    send(dstSocket_ID, body.c_str(), (int)body.length(), 0);
 
     /* socket close */
-    close(dstSocket);
+    close(dstSocket_ID);
 
     /*************************************************************************/
 
     /* ソケット生成 */
-    int dstSocket = socket(AF_INET, SOCK_STREAM, 0);
-    if (dstSocket < 0) printf("ソケット生成エラー\n");
+    int dstSocket_DATA = socket(AF_INET, SOCK_STREAM, 0);
+    if (dstSocket_DATA < 0) printf("DATA:ソケット生成エラー\n");
+
+    struct sockaddr_in dstAddr_DATA;
 
     /* 接続 */
-    int result = connect(dstSocket, (struct sockaddr *)&(dstAddr), sizeof(dstAddr));
-    if (result < 0) {
-        printf("バインドエラー\n");
+    int result_DATA = connect(dstSocket_DATA, (struct sockaddr *)&(dstAddr_DATA), sizeof(dstAddr_DATA));
+    if (result_DATA < 0) {
+        printf("DATA:バインドエラー\n");
         exit(1);
     }
 
@@ -120,37 +122,37 @@ void HTTP_Send(int YOUR_ID, int SEND_TO_ID, int TAG, void *p, int LEN, const cha
     data_length += text_end_len(filename.c_str());
 
     /* headerの送信(file_header) */
-    char* text=(char*)malloc(sizeof(char)*512);
+    char* text_DATA=(char*)malloc(sizeof(char)*512);
 
-    sprintf(text, "POST %s?ID_%d HTTP/1.1\r\n", httppath[DATA], YOUR_ID);
-    send(dstSocket, text, strlen(text), 0);
+    sprintf(text_DATA, "POST %s?ID_%d HTTP/1.1\r\n", httppath[DATA], YOUR_ID);
+    send(dstSocket_DATA, text_DATA, strlen(text_DATA), 0);
 
-    sprintf(text, "Host: %s:%d\r\n", httphost, port);
-    send(dstSocket, text, strlen(text), 0);
+    sprintf(text_DATA, "Host: %s:%d\r\n", httphost, port);
+    send(dstSocket_DATA, text_DATA, strlen(text_DATA), 0);
 
-    sprintf(text, "Content-Length: %d\r\n", data_length);
-    send(dstSocket, text, strlen(text), 0);
+    sprintf(text_DATA, "Content-Length: %d\r\n", data_length);
+    send(dstSocket_DATA, text_DATA, strlen(text_DATA), 0);
 
-    sprintf(text, "Connection: Close\r\n");
-	send(dstSocket, text, strlen(text), 0);
+    sprintf(text_DATA, "Connection: Close\r\n");
+	send(dstSocket_DATA, text_DATA, strlen(text_DATA), 0);
 
-    sprintf(text, "Content-Type: multipart/form-data; boundary=xYzZY\r\n");
-    send(dstSocket, text, strlen(text), 0);
+    sprintf(text_DATA, "Content-Type: multipart/form-data; boundary=xYzZY\r\n");
+    send(dstSocket_DATA, text_DATA, strlen(text_DATA), 0);
 
-    sprintf(text, "\r\n"); 
-    send(dstSocket, text, strlen(text), 0);
+    sprintf(text_DATA, "\r\n"); 
+    send(dstSocket_DATA, text_DATA, strlen(text_DATA), 0);
 
-    sprintf(text, "--xYzZY\r\n");
-    send(dstSocket, text, strlen(text), 0);
+    sprintf(text_DATA, "--xYzZY\r\n");
+    send(dstSocket_DATA, text_DATA, strlen(text_DATA), 0);
 
-    sprintf(text, "Content-Disposition: form-data; name=\"file\"; filename=%s\r\n", filename.c_str());
-    send(dstSocket, text, strlen(text), 0);
+    sprintf(text_DATA, "Content-Disposition: form-data; name=\"file\"; filename=%s\r\n", filename.c_str());
+    send(dstSocket_DATA, text_DATA, strlen(text_DATA), 0);
 
-    sprintf(text, "Content-Type: text/plain\r\n");
-    send(dstSocket, text, strlen(text), 0);
+    sprintf(text_DATA, "Content-Type: text/plain\r\n");
+    send(dstSocket_DATA, text_DATA, strlen(text_DATA), 0);
 
-    sprintf(text, "\r\n");
-    send(dstSocket, text, strlen(text), 0);
+    sprintf(text_DATA, "\r\n");
+    send(dstSocket_DATA, text_DATA, strlen(text_DATA), 0);
 
     /* Bodyの送信 */
     for (int i = 0; i < LEN; i++) {
@@ -167,23 +169,23 @@ void HTTP_Send(int YOUR_ID, int SEND_TO_ID, int TAG, void *p, int LEN, const cha
 			sprintf(toSendText, "%f\n", ((float*)send_DATA_P)[i]);
 		else if (!strcmp(TYPE, "MPI_DOUBLE"))
 			sprintf(toSendText, "%lf\n", ((double*)send_DATA_P)[i]);
-		send(dstSocket, toSendText, strlen(toSendText), 0);
+		send(dstSocket_DATA, toSendText, strlen(toSendText), 0);
     }
 
     // text_end
-    char* text=(char*)malloc(sizeof(char)*512);
+    char* text_end=(char*)malloc(sizeof(char)*512);
 
-    sprintf(text, "\r\n");
-    send(dstSocket, text, strlen(text), 0);
+    sprintf(text_end, "\r\n");
+    send(dstSocket_DATA, text_end, strlen(text_end), 0);
 
     sprintf("text", "--xYzZY--\r\n");
-    send(dstSocket, text, strlen(text), 0);
+    send(dstSocket_DATA, text_end, strlen(text_end), 0);
 
-    sprintf(text, "\r\n");
-    send(dstSocket, text, strlen(text), 0);
+    sprintf(text_end, "\r\n");
+    send(dstSocket_DATA, text_end, strlen(text_end), 0);
 
     /* socket close */
-    close(dstSocket);
+    close(dstSocket_DATA);
 
     /*************************************************************************/
 
@@ -192,46 +194,48 @@ void HTTP_Send(int YOUR_ID, int SEND_TO_ID, int TAG, void *p, int LEN, const cha
 
     while (1) {
         /* ソケット生成 */
-        int dstSocket = socket(AF_INET, SOCK_STREAM, 0);
-        if (dstSocket < 0) printf("ソケット生成エラー\n");
+        int dstSocket_FLAG = socket(AF_INET, SOCK_STREAM, 0);
+        if (dstSocket_FLAG < 0) printf("FLAG:ソケット生成エラー\n");
+
+        struct sockaddr_in dstAddr_FLAG;
 
         /* 接続 */
-        int result = connect(dstSocket, (struct sockaddr *)&(dstAddr), sizeof(dstAddr));
-        if (result < 0) {
-            printf("バインドエラー\n");
+        int result_FLAG = connect(dstSocket_FLAG, (struct sockaddr *)&(dstAddr_FLAG), sizeof(dstAddr_FLAG));
+        if (result_FLAG < 0) {
+            printf("FLAG:バインドエラー\n");
             exit(1);
         }
 
         /* headerの送信 (normal_header) */
-        char *text = (char *)malloc(sizeof(char)*512);
+        char *text_FLAG = (char *)malloc(sizeof(char)*512);
 
         // http header
-        sprintf(text, "POST %s?ID_%d HTTP/1.1\r\n", httppath[FLAG], YOUR_ID);
-        send(dstSocket, text, strlen(text), 0);
+        sprintf(text_FLAG, "POST %s?ID_%d HTTP/1.1\r\n", httppath[FLAG], YOUR_ID);
+        send(dstSocket_FLAG, text_FLAG, strlen(text_FLAG), 0);
 
         // set host
-        sprintf(text, "Host: %s:%d\r\n", httphost, port);
-        send(dstSocket, text, strlen(text), 0);
+        sprintf(text_FLAG, "Host: %s:%d\r\n", httphost, port);
+        send(dstSocket_FLAG, text_FLAG, strlen(text_FLAG), 0);
 
         // コンテンツタイプの指定
-        sprintf(text, "Content-Type: application/x-www-form-urlencoded\r\n");
-        send(dstSocket, text, strlen(text), 0);
+        sprintf(text_FLAG, "Content-Type: application/x-www-form-urlencoded\r\n");
+        send(dstSocket_FLAG, text_FLAG, strlen(text_FLAG), 0);
 
         // コンテンツの長さ(バイト)を指定する
-        sprintf(text, "Content-Length: %d\r\n", (int)body.length());
-        send(dstSocket, text, strlen(text), 0);
+        sprintf(text_FLAG, "Content-Length: %d\r\n", (int)body.length());
+        send(dstSocket_FLAG, text_FLAG, strlen(text_FLAG), 0);
 
-        sprintf(text, "Connection: Close\r\n");
-        send(dstSocket, text, strlen(text), 0);
+        sprintf(text_FLAG, "Connection: Close\r\n");
+        send(dstSocket_FLAG, text_FLAG, strlen(text_FLAG), 0);
 
-        sprintf(text, "\r\n");
-        send(dstSocket, text, strlen(text), 0);
+        sprintf(text_FLAG, "\r\n");
+        send(dstSocket_FLAG, text_FLAG, strlen(text_FLAG), 0);
 
         /* bodyの送信 (sock.mysend) */
-        send(dstSocket, body.c_str(), (int)body.length(), 0);
+        send(dstSocket_FLAG, body.c_str(), (int)body.length(), 0);
 
         /* socket close */
-        close(dstSocket);
+        close(dstSocket_FLAG);
 
         if (ok) {
             break;
