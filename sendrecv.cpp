@@ -1,6 +1,7 @@
 #include "mpi.h"
 
 #define BUF_SIZE 2
+#define LOOP 2
 
 int main(int argc, char *argv[]){
     int proc, id;
@@ -13,8 +14,8 @@ int main(int argc, char *argv[]){
     double *send_buf=(double*)malloc(sizeof(double)*BUF_SIZE);
     double *recv_buf=(double*)malloc(sizeof(double)*BUF_SIZE);
 
-    send_buf[0] = 1;
-    recv_buf[0] = 0;
-
-    if (id == 0)
+    for (int l = 1; l <= LOOP; l++) {
+        for (int i = 0; i < BUF_SIZE; i++) send_buf[i] = l;
+        for (int i = 0; i < BUF_SIZE; i++) recv_buf[i] = 0;
+    }
 }
